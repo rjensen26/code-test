@@ -1,0 +1,3 @@
+name = Authenicated User Message
+description = Adds a sidebar for authenticated users to be welcomed
+core = 7.x

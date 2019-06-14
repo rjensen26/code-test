@@ -1,0 +1,71 @@
+<?php
+
+/**
+ * Implements hook_block_info().
+ */
+function auth_message_block_info() {
+
+  $blocks = array();
+  $blocks['auth_message'] = array(
+    'info' => t('Auth Welcome Message'),
+  );
+
+  return $blocks;
+}
+
+/**
+ * Implements hook_block_configure().
+ */
+function auth_message_block_configure($delta = '') {
+
+  $form = array();
+
+  if ($delta === 'auth_message') {
+    $form['auth_message_body'] = array(
+      '#type' => 'text_format',
+      '#title' => t('Welcome Message'),
+      '#default_value' => variable_get('auth_message_body')
+    );
+  }
+
+  return $form;
+}
+
+/**
+ * Implements hook_block_save().
+ */
+function auth_message_block_save($delta = '', $edit = array()) {
+
+  if ($delta === 'auth_message') {
+    variable_set('auth_message_body', $edit['auth_message_body']['value']);
+  }
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function auth_message_block_view($delta = '') {
+
+  global $user;
+
+  $block = array();
+
+  if ($delta === 'auth_message') {
+    if (user_access('access content')) {
+
+      $block['subject'] = '';
+      $block['content'] = array(
+        '#type' => 'markup',
+        '#markup' => t('<p>Hello <em>!username!</em><br>your last log in was <em>!login</em>.<br><a href="!profileLink">Visit your profile</a></p>' . variable_get('auth_message_body'),
+          array(
+            '!username' => $user->name,
+            '!login' => date('F jS, Y g:i a', $user->login),
+            '!profileLink' => drupal_get_path_alias('user/' . $user->uid)
+          )
+        ),
+      );
+    }
+  }
+
+  return $block;
+}

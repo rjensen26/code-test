@@ -1,0 +1,17 @@
+<?php
+
+/**
+ * Implementation hoook_install();
+ */
+function auth_message_install() {
+
+  variable_set('auth_message_body', '');
+}
+
+/**
+ * Implementation hoook_uninstall();
+ */
+function auth_message_uninstall() {
+
+  variable_del('auth_message_body');
+}
